@@ -87,6 +87,14 @@ public class GameUnoController {
         addImageButtonDecks();
         setBackgroundImagePane(borderPane, "/org/example/eiscuno/images/background_uno.png");
 
+        // Seleccionar la carta inicial del mazo
+        Card initialCard = deck.takeCard();
+        table.addCardOnTheTable(initialCard);
+
+        // Establecer la imagen de la carta inicial en tableImageView
+        tableImageView.setImage(initialCard.getImage());
+
+
         threadSingUNOMachine = new ThreadSingUNOMachine(this.humanPlayer.getCardsPlayer(), this);
         Thread t = new Thread(threadSingUNOMachine, "ThreadSingUNO");
         t.start();
@@ -280,6 +288,7 @@ public class GameUnoController {
         System.out.println("Se tomó una carta.");
         System.out.println("Cartas del jugador: " + humanPlayer.getCardsPlayer().size());
         System.out.println("Carta tomada: " + card);
+        startMachineTurn();
         System.out.println("Turno de " + playerTurnState);
     }
 
@@ -290,7 +299,7 @@ public class GameUnoController {
         new Thread(() -> {
             threadPlayMachine.setHasPlayerPlayed(true);
             try {
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
