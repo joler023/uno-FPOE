@@ -282,8 +282,7 @@ public class GameUnoController {
         Card card = deck.takeCard();
         if (card == null) {
             System.out.println("No hay más cartas en el mazo.");
-            currentState = currentState == playerTurnState ? machineTurnState : playerTurnState;
-            startMachineTurn();
+
             return;
         } else {
             humanPlayer.addCard(card);
@@ -298,6 +297,8 @@ public class GameUnoController {
             startMachineTurn();
             System.out.println("Turno de " + playerTurnState);
         }
+        currentState = currentState == playerTurnState ? machineTurnState : playerTurnState;
+        startMachineTurn();
 
     }
 
