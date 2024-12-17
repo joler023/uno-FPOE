@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
+import org.example.eiscuno.exceptios.InvalidMoveException;
 import org.example.eiscuno.model.Alert.AlertWinner;
 import org.example.eiscuno.model.StatePatron.GameOverState;
 import org.example.eiscuno.model.StatePatron.GameState;
@@ -282,8 +283,7 @@ public class GameUnoController {
         Card card = deck.takeCard();
         if (card == null) {
             System.out.println("No hay más cartas en el mazo.");
-            currentState = currentState == playerTurnState ? machineTurnState : playerTurnState;
-            startMachineTurn();
+
             return;
         } else {
             humanPlayer.addCard(card);
@@ -298,6 +298,8 @@ public class GameUnoController {
             startMachineTurn();
             System.out.println("Turno de " + playerTurnState);
         }
+        currentState = currentState == playerTurnState ? machineTurnState : playerTurnState;
+        startMachineTurn();
 
     }
 
@@ -312,14 +314,27 @@ public class GameUnoController {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            threadPlayMachine.putCardOnTheTable();
-            gameUno.checkForSpecialCard(threadPlayMachine.getLastPlayedCard(), humanPlayer);
 
+            // Agregar control para la carta nula
+            try {
+                threadPlayMachine.putCardOnTheTable(); // Suponemos que este método intenta colocar una carta
+                Card lastPlayedCard = threadPlayMachine.getLastPlayedCard();
+
+                if (lastPlayedCard == null) {
+                    throw new InvalidMoveException("La carta jugada por la máquina es inválida (null).");
+                }
+
+                gameUno.checkForSpecialCard(lastPlayedCard, humanPlayer); // Procedemos solo si la carta es válida
+            } catch (InvalidMoveException e) {
+                System.out.println("Error en el turno de la máquina: " + e.getMessage());
+                // Aquí puedes agregar lógica adicional, como un turno de la máquina que se repita
+            }
+
+            // Si no hubo excepción, continuamos con el flujo normal
             Platform.runLater(() -> setState(playerTurnState));
         }).start();
-        printCardsHumanPlayer();
-
     }
+
 
 
     /**
