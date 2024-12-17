@@ -102,7 +102,8 @@ public class Deck {
      */
     public Card takeCard() {
         if (deckOfCards.isEmpty()) {
-            throw new IllegalStateException("No hay más cartas en el mazo.");
+            //throw new IllegalStateException("No hay más cartas en el mazo.");
+            return null;
         }
         return deckOfCards.pop();
     }

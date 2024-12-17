@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
 import org.example.eiscuno.model.Alert.AlertWinner;
+import org.example.eiscuno.model.StatePatron.GameOverState;
 import org.example.eiscuno.model.StatePatron.GameState;
 import org.example.eiscuno.model.StatePatron.MachineTurnState;
 import org.example.eiscuno.model.StatePatron.PlayerTurnState;
@@ -67,8 +68,8 @@ public class GameUnoController {
     private ThreadPlayMachine threadPlayMachine;
     private Stack<Card> deckOfCards = new Stack<>();
 
-    private GameState playerTurnState;
-    private GameState machineTurnState;
+    private PlayerTurnState playerTurnState;
+    private MachineTurnState machineTurnState;
     private GameState currentState;
 
     private boolean unoButtonPressed = false;
@@ -279,17 +280,25 @@ public class GameUnoController {
      */
     public void drawCard() {
         Card card = deck.takeCard();
-        humanPlayer.addCard(card);
-        printCardsHumanPlayer();
-        // Stops the timer
-        if (unoTimer.getStatus() == PauseTransition.Status.RUNNING) {
-            unoTimer.stop();
+        if (card == null) {
+            System.out.println("No hay más cartas en el mazo.");
+            currentState = currentState == playerTurnState ? machineTurnState : playerTurnState;
+            startMachineTurn();
+            return;
+        } else {
+            humanPlayer.addCard(card);
+            printCardsHumanPlayer();
+            // Stops the timer
+            if (unoTimer.getStatus() == PauseTransition.Status.RUNNING) {
+                unoTimer.stop();
+            }
+            System.out.println("Se tomó una carta.");
+            System.out.println("Cartas del jugador: " + humanPlayer.getCardsPlayer().size());
+            System.out.println("Carta tomada: " + card);
+            startMachineTurn();
+            System.out.println("Turno de " + playerTurnState);
         }
-        System.out.println("Se tomó una carta.");
-        System.out.println("Cartas del jugador: " + humanPlayer.getCardsPlayer().size());
-        System.out.println("Carta tomada: " + card);
-        startMachineTurn();
-        System.out.println("Turno de " + playerTurnState);
+
     }
 
     /**
@@ -334,8 +343,10 @@ public class GameUnoController {
                     } else {
                         System.out.println("No se puede jugar esa carta en este momento.");
                     }
-                } else {
+                } else if (currentState == machineTurnState) {
                     System.out.println("No es tu turno para jugar.");
+                } else {
+                    System.out.println("Por algún otro motivo no puedes jugar.");
                 }
             });
 
@@ -551,15 +562,27 @@ public class GameUnoController {
     /**
      * shows an alert when the human player has 0 card winning the game
      */
-    public void showWinner(){
-        if(this.humanPlayer.getCardsPlayer().size()==0){
+    public void showWinner() {
+        // Verifica si el jugador humano ha ganado
+        if (gameUno.isGameOver()) {
+            // Detiene el temporizador de UNO
             unoTimer.stop();
-            String tittle="WINNER";
-            String header ="";
-            String content ="¡Has Ganado!";
-            AlertWinner alertBox=new AlertWinner();
-            alertBox.showMessageWinner(tittle,header,content);
-            stopGame();
+
+            // Muestra el mensaje de ganador
+            String title = "WINNER";
+            String header = "";
+            String content = "¡Has Ganado!";
+            AlertWinner alertBox = new AlertWinner();
+            alertBox.showMessageWinner(title, header, content);
+
+            // Bloquea más acciones
+            setState(new GameOverState(this)); // Cambia el estado del juego a 'Game Over'
+            stopGame(); // Detiene el juego
+            System.out.println("El juego terminó"); // Imprime en consola el fin del juego
         }
     }
+
 }
+
+
+

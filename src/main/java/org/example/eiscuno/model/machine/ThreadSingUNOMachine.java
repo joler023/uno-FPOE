@@ -43,6 +43,7 @@ public class ThreadSingUNOMachine implements Runnable {
             controller.forceHumanPlayerToTakeCard();
         } else if (cardsPlayer.size() != 1 && unoAnnounced) {
             unoAnnounced = false;
+            System.out.println("UNO INVALIDO");
         }
     }
 
