@@ -133,6 +133,9 @@ public class GameUno implements IGameUno {
      */
     @Override
     public Boolean isGameOver() {
-        return null;
+        // Devuelve verdadero si el jugador humano no tiene cartas
+        return this.humanPlayer.getCardsPlayer().size() == 0;
     }
 }
+
+

@@ -91,3 +91,4 @@ public class ThreadPlayMachine extends Thread {
     public Card getLastPlayedCard() {return lastPlayedCard;}
 
 }
+//quiero que justo debajo de esta linea generes en un comentario largo una sinteis del codigo, los nombres de cada metodo, sus datos de entrada y sus datos de salida
