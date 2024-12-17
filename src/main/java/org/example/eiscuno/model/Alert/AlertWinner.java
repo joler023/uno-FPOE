@@ -10,7 +10,9 @@ public class AlertWinner implements IAlertWinner {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
-        alert.setGraphic(new ImageView(String.valueOf(getClass().getResource("/org/example/eiscuno/images/winnerImg.jpg"))));
+        alert.setGraphic(new ImageView(String.valueOf(getClass().getResource("/org/example/eiscuno/images/winnerImg.jpeg"))));
         alert.showAndWait();
     }
 }
+
+
